@@ -1,0 +1,175 @@
+<div class="grid">
+  <div class="col-12">
+    <p-speedDial
+      [hideOnClickOutside]="false"
+      [model]="tableHeaderActionArr"
+      [visible]="true"
+      class="flex justify-content-end"
+      direction="left"
+      hideIcon="pi pi-times"
+      showIcon="pi pi-ellipsis-v"
+      styleClass="flex justify-content-end"></p-speedDial>
+  </div>
+  <div class="col-12">
+    <p-tabView
+      (onChange)="tabChange()"
+      [(activeIndex)]="selectedTabIndex">
+      <p-tabPanel
+        *ngFor="let taskTab of taskTabDetails; let taskTabIndex = index"
+        [cache]="false"
+        [selected]="taskTabIndex === selectedTabIndex">
+        <ng-template pTemplate="header">
+          <span class="mr-1">{{ taskTab.tabTitle }}</span>
+          <p-badge value="{{taskTab.totalCount}}"/>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <p-table
+            #dt
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [totalRecords]="40"
+            [value]="tableData"
+            styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th>
+                  Title
+                </th>
+                <th>
+                  Created By
+                </th>
+                <th>
+                  Status
+                </th>
+                <th>
+                  Priority
+                </th>
+                <th>
+                  Creation Date
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template let-task pTemplate="body">
+              <tr class="p-selectable-row">
+                <td>
+                  <p-tableCheckbox
+                    (click)="$event.stopPropagation()"
+                    [value]="task"></p-tableCheckbox>
+                </td>
+                <td>
+                  <span class="p-column-title">Title</span>
+                  <span>{{ task.title }}</span>
+                </td>
+                <td>
+                  <span class="p-column-title">Created By</span>
+                  <span>{{ task.creadted_by }}</span>
+                </td>
+                <td>
+                  <span class="p-column-title">Status</span>
+                  <p-tag [severity]="getSeverity(task.status)" [value]="task.status | titlecase"/>
+                </td>
+                <td>
+                  <span class="p-column-title">Priority</span>
+                  <span [class]="getPriorityClass(task.priority)"
+                        class="font-xs badge">{{ task.priority | uppercase }}</span>
+                </td>
+                <td>
+                  <span class="p-column-title">Creation Date</span>
+                  <span>{{ task.creation_date | date:'EEEE, MMMM d, y' }}</span>
+                </td>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6">
+                  <h4 class="flex justify-content-center align-items-center">
+                    No task found
+                  </h4>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<p-dialog
+  [(visible)]="isAddTaskDialogVisible"
+  [closable]="false"
+  [draggable]="false"
+  [modal]="true"
+  class="task-dialog"
+  styleClass="md:w-4 w-9 task-dialog">
+  <ng-template pTemplate="header">
+    <h3>Add Task</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <form (ngSubmit)="onFormSubmit()" [formGroup]="taskForm" class="grid">
+      <div class="col-12 field flex flex-column">
+        <label>Title</label>
+        <input [ngClass]="{ 'border-red-500' : taskForm.get('title')?.invalid && taskForm.get('title')?.touched }"
+               formControlName="title" pInputText placeholder="Task title"
+               type="text">
+        <small *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-red-500">Please
+          enter task title</small>
+      </div>
+      <div class="col-12 field flex flex-column">
+        <label>Description</label>
+        <textarea
+          [ngClass]="{ 'border-red-500' : taskForm.get('description')?.invalid && taskForm.get('description')?.touched }"
+          cols="30"
+          formControlName="description"
+          pInputTextarea
+          rows="5"
+        >
+        </textarea>
+        <small *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched"
+               class="text-red-500">Please enter task description</small>
+      </div>
+      <div class="col-12 md:col-6 field flex flex-column">
+        <label>Priority</label>
+        <p-dropdown
+          [appendTo]="'body'"
+          [ngClass]="{ 'border-red-500' : taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched }"
+          [options]="priorityArr"
+          class="w-full"
+          formControlName="priority"
+          styleClass="w-full">
+        </p-dropdown>
+        <small *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched"
+               class="text-red-500">Please select task priority</small>
+      </div>
+      <div class="col-12 md:col-6 field flex flex-column">
+        <label>Story Point</label>
+        <input [ngClass]="{ 'border-red-500' : taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched }"
+               formControlName="story_point" max="12" min="1" pInputText placeholder="story point"
+               type="number">
+        <small *ngIf="taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched"
+               class="text-red-500">Please select valid story point</small>
+      </div>
+      <div class="col-12 field flex flex-column">
+        <label>Assigned to</label>
+        <p-dropdown
+          [appendTo]="'body'"
+          [ngClass]="{ 'border-red-500' : taskForm.get('assigned_person')?.invalid && taskForm.get('assigned_person')?.touched }"
+          [options]="userList"
+          class="w-full"
+          formControlName="assigned_person"
+          styleClass="w-full">
+        </p-dropdown>
+        <small *ngIf="taskForm.get('assigned_person')?.invalid && taskForm.get('assigned_person')?.touched"
+               class="text-red-500">Please select assignee</small>
+      </div>
+      <div class="col-12 field flex justify-content-end gap-1">
+        <p-button [disabled]="taskForm.invalid" label="submit" type="submit"></p-button>
+        <p-button (onClick)="onClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
+      </div>
+    </form>
+  </ng-template>
+</p-dialog>

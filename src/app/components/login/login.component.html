@@ -1,0 +1,165 @@
+<div class="flex align-items-center justify-content-center w-full h-full">
+  <p-card header="{{ scope === 'login' ? 'Login' : 'Sign Up'}}" styleClass="login-card">
+    <ng-template pTemplate="content">
+      <form
+        (ngSubmit)="doLogin()"
+        *ngIf="scope === 'login'" [formGroup]="loginForm">
+        <div class="field">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user color-secondary w-max"></i>
+            <input
+              autocomplete="email"
+              class="w-full"
+              formControlName="email"
+              name="email"
+              pInputText
+              placeholder='Enter email'
+              type="text"/>
+          </span>
+        </div>
+        <div class="field">
+          <span class="p-input-icon-left p-input-icon-right w-full">
+            <i class="pi pi-lock color-secondary w-max"></i>
+            <input
+              #loginPassword
+              formControlName="password"
+              pInputText
+              placeholder="* * * * * *"
+              type="password"/>
+            <i
+              (click)="loginPassword.type = 'password'"
+              *ngIf="loginPassword.type === 'text'"
+              class="pi pi-eye cursor-pointer"></i>
+            <i
+              (click)="loginPassword.type = 'text'"
+              *ngIf="loginPassword.type === 'password'"
+              class="pi pi-eye-slash cursor-pointer"></i>
+                </span>
+        </div>
+        <div class="field">
+          <button
+            [disabled]="loginForm.invalid"
+            class="w-full"
+            label="login"
+            pButton
+            type="submit">
+          </button>
+        </div>
+      </form>
+      <form
+        (ngSubmit)="doSingIn()"
+        *ngIf="scope === 'signUp'"
+        [formGroup]="signInForm" class="grid">
+        <div class="col-12 md:col-6 field">
+          <label>First name</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-pencil color-secondary w-max"></i>
+            <input
+              [ngClass]="{ 'border-red-500' : signInForm.get('firstName')?.invalid && signInForm.get('firstName')?.touched }"
+              class="w-full"
+              formControlName="firstName"
+              name="firstName"
+              pInputText
+              placeholder='Enter first name'
+              type="text"/>
+          </span>
+          <small *ngIf="signInForm.get('firstName')?.invalid && signInForm.get('firstName')?.touched"
+                 class="text-red-500">Please
+            enter first name</small>
+        </div>
+        <div class="col-12 md:col-6 field">
+          <label>Last name</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-pencil color-secondary w-max"></i>
+            <input
+              [ngClass]="{ 'border-red-500' : signInForm.get('lastName')?.invalid && signInForm.get('lastName')?.touched }"
+              class="w-full"
+              formControlName="lastName"
+              name="lastName"
+              pInputText
+              placeholder='Enter last name'
+              type="text"/>
+          </span>
+          <small *ngIf="signInForm.get('lastName')?.invalid && signInForm.get('lastName')?.touched"
+                 class="text-red-500">Please
+            enter last name</small>
+        </div>
+        <div class="col-12 field">
+          <label>Email</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope color-secondary w-max"></i>
+            <input
+              [ngClass]="{ 'border-red-500' : signInForm.get('email')?.invalid && signInForm.get('email')?.touched }"
+              class="w-full"
+              formControlName="email"
+              name="email"
+              pInputText
+              placeholder='Enter email'
+              type="text"/>
+          </span>
+          <small *ngIf="signInForm.get('email')?.invalid && signInForm.get('email')?.touched"
+                 class="text-red-500">Please
+            enter valid email</small>
+        </div>
+        <div class="col-12 field">
+          <label>Password</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock color-secondary w-max"></i>
+            <input
+              [ngClass]="{ 'border-red-500' : signInForm.get('password')?.invalid && signInForm.get('password')?.touched }"
+              class="w-full"
+              formControlName="password"
+              name="password"
+              pInputText
+              placeholder='Enter password'
+              type="text"/>
+          </span>
+          <small *ngIf="signInForm.get('password')?.invalid && signInForm.get('password')?.touched"
+                 class="text-red-500">Please
+            enter password</small>
+        </div>
+        <div class="col-12 field">
+          <label>Re-enter password</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock color-secondary w-max"></i>
+            <input
+              [ngClass]="{ 'border-red-500' : signInForm.get('reEnterPassword')?.invalid && signInForm.get('reEnterPassword')?.touched }"
+              class="w-full"
+              formControlName="reEnterPassword"
+              name="reEnterPassword"
+              pInputText
+              placeholder='Re enter password'
+              type="text"/>
+          </span>
+          <small *ngIf="signInForm.get('reEnterPassword')?.invalid && signInForm.get('reEnterPassword')?.touched"
+                 class="text-red-500">Please
+            enter re-enter password</small>
+        </div>
+        <div class="col-12 field flex flex-column">
+          <label>Role</label>
+          <p-dropdown
+            [ngClass]="{ 'border-red-500' : signInForm.get('role')?.invalid && signInForm.get('role')?.touched }"
+            [options]="userRole"
+            class="w-full"
+            formControlName="role"
+            placeholder="Select role"
+            styleClass="w-full"></p-dropdown>
+          <small *ngIf="signInForm.get('role')?.invalid && signInForm.get('role')?.touched"
+                 class="text-red-500">Please select user role</small>
+        </div>
+        <div class="col-12 field">
+          <button [disabled]="signInForm.invalid" class="w-full" label="Sign up" pButton type="submit"></button>
+        </div>
+      </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end align-items-center">
+        <div (click)="changeScope()" class="cursor-pointer">
+          <small
+            class="underline font-italic text-700 hover:text-800">{{ scope === 'login' ? 'sign up' : 'login' }}</small>
+          <i class="pi pi-arrow-right text-xs ml-1"></i>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

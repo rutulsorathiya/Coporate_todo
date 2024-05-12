@@ -1,0 +1,18 @@
+<div class="grid grid-nogutter">
+  <div class="col-12">
+    <div class="navbar">
+      <div>
+        <span class="navbar__header-text">Dashboard</span>
+      </div>
+      <div>
+        <p-menubar
+          [model]="navBarItems"
+          class="dashboard-menubar"
+          styleClass="dashboard-menubar"></p-menubar>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 p-3">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+  font-family: "Inter var", sans-serif !important;
+}
+
+::-webkit-scrollbar {
+  scrollbar-width: thin;
+}
+
+.badge {
+  display: inline-block;
+  padding: .25em .4em;
+  font-size: 75%;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+}
+
+.badge-success {
+  color: #fff;
+  background-color: #28a745;
+}
+
+.badge-danger {
+  color: #fff;
+  background-color: #dc3545;
+}
+
+.badge-warning {
+  color: #212529;
+  background-color: #ffc107;
+}
+
+.badge-secondary {
+  color: #fff;
+  background-color: #6c757d;
+}
+
+.awaited-status {
+  background-color: #fff7eb;
+  color: #ff9700;
+}
+
+

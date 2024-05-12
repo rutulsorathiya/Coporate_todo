@@ -1,0 +1,57 @@
+.login-card.p-card {
+  box-shadow: 0 0 5px #aaaaaa;
+  max-width: 500px;
+  max-height: 650px;
+  overflow: auto;
+
+  .p-card-title {
+    width: fit-content;
+    border-bottom: 2px solid black;
+    padding-bottom: 5px;
+  }
+
+  .p-card-footer {
+    padding: 0;
+  }
+}
+
+.dashboard-menubar.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:not(.p-disabled):hover {
+  background: none;
+}
+
+.dashboard-menubar.p-menubar {
+  background: none;
+  border: none;
+  padding: 0;
+
+  .pi {
+    font-size: 20px;
+  }
+}
+
+
+.action-button-color {
+  &.p-button {
+    &.p-button-text {
+      color: black;
+
+      &:enabled {
+        &:hover {
+          color: black;
+        }
+      }
+    }
+  }
+}
+
+.task-dialog.p-dialog .p-dialog-header {
+  padding: 1rem !important;
+}
+
+@import "inputtext";
+@import "tabview";
+@import "tag";
+@import "overlaypanel";
+@import "speeddial";
+@import "button";
+@import "dropdown";
