@@ -14,7 +14,6 @@ export class UserService {
     } else {
       return;
     }
-
   }
 
   getUserList() {

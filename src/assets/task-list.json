@@ -2,6 +2,9 @@
   {
     "title": "Task1",
     "status": "Awaited",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -9,6 +12,9 @@
   {
     "title": "Task2",
     "status": "Awaited",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 3,
     "priority": "Low",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -16,6 +22,9 @@
   {
     "title": "Task3",
     "status": "Awaited",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 5,
     "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -23,6 +32,9 @@
   {
     "title": "Task4",
     "status": "Awaited",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -30,6 +42,9 @@
   {
     "title": "Task5",
     "status": "Awaited",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "Medium",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -37,6 +52,9 @@
   {
     "title": "Task6",
     "status": "Todo",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -44,6 +62,9 @@
   {
     "title": "Task7",
     "status": "Todo",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -51,6 +72,9 @@
   {
     "title": "Task8",
     "status": "Todo",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -58,6 +82,9 @@
   {
     "title": "Task9",
     "status": "Todo",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "Medium",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -65,6 +92,9 @@
   {
     "title": "Task10",
     "status": "Todo",
+    "description": "Tester!!",
+    "assigned_person": "Mahesh",
+    "story_point": 2,
     "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -72,6 +102,9 @@
   {
     "title": "Task11",
     "status": "Done",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 3,
     "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -79,6 +112,9 @@
   {
     "title": "Task12",
     "status": "Done",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -86,6 +122,9 @@
   {
     "title": "Task13",
     "status": "Done",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -93,6 +132,9 @@
   {
     "title": "Task14",
     "status": "Done",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -100,6 +142,9 @@
   {
     "title": "Task15",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 1,
     "priority": "Low",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -107,6 +152,9 @@
   {
     "title": "Task16",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -114,6 +162,9 @@
   {
     "title": "Task17",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -121,6 +172,9 @@
   {
     "title": "Task18",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -128,6 +182,9 @@
   {
     "title": "Task19",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 5,
     "priority": "High",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
@@ -135,6 +192,9 @@
   {
     "title": "Task20",
     "status": "Rejected",
+    "description": "Tester!!",
+    "assigned_person": "Krunal",
+    "story_point": 1,
     "priority": "High",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"

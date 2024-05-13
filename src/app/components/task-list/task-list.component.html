@@ -23,26 +23,32 @@
         </ng-template>
         <ng-template pTemplate="content">
           <p-table
-            (selectionChange)="onTasksCheckboxSelection()"
             [(selection)]="selectedTasks"
             [value]="tableData"
             styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
               <tr>
-                <th>
+                <th
+                  *ngIf="(currentUser.role === 'Developer' && selectedTabIndex === 1) || (currentUser.role === 'Admin' && !selectedTabIndex)">
                   <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
                 <th>
                   Title
                 </th>
                 <th>
-                  Created By
+                  Assignee
                 </th>
                 <th>
                   Status
                 </th>
                 <th>
+                  Story point
+                </th>
+                <th>
                   Priority
+                </th>
+                <th>
+                  Created By
                 </th>
                 <th>
                   Creation Date
@@ -50,8 +56,9 @@
               </tr>
             </ng-template>
             <ng-template let-task pTemplate="body">
-              <tr class="p-selectable-row">
-                <td>
+              <tr (click)="onTaskRowClick(task)" class="p-selectable-row cursor-pointer">
+                <td
+                  *ngIf="(currentUser.role === 'Developer' && selectedTabIndex === 1) || (currentUser.role === 'Admin' && !selectedTabIndex)">
                   <p-tableCheckbox
                     (click)="$event.stopPropagation()"
                     [value]="task"></p-tableCheckbox>
@@ -61,17 +68,25 @@
                   <span>{{ task.title }}</span>
                 </td>
                 <td>
-                  <span class="p-column-title">Created By</span>
-                  <span>{{ task.creadted_by }}</span>
+                  <span class="p-column-title">Assignee</span>
+                  <span>{{ task.assigned_person }}</span>
                 </td>
                 <td>
                   <span class="p-column-title">Status</span>
                   <p-tag [severity]="getSeverity(task.status)" [value]="task.status"/>
                 </td>
                 <td>
+                  <span class="p-column-title">Story point</span>
+                  <span>{{ task.story_point }}</span>
+                </td>
+                <td>
                   <span class="p-column-title">Priority</span>
                   <span [class]="getPriorityClass(task.priority)"
                         class="font-xs badge">{{ task.priority | uppercase }}</span>
+                </td>
+                <td>
+                  <span class="p-column-title">Created By</span>
+                  <span>{{ task.creadted_by }}</span>
                 </td>
                 <td>
                   <span class="p-column-title">Creation Date</span>
@@ -81,7 +96,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="6">
+                <td colspan="8">
                   <h4 class="flex justify-content-center align-items-center">
                     No task found
                   </h4>
@@ -108,7 +123,7 @@
   <ng-template pTemplate="content">
     <form (ngSubmit)="onFormSubmit()" [formGroup]="taskForm" class="grid">
       <div class="col-12 field flex flex-column">
-        <label>Title</label>
+        <label class="field-required">Title</label>
         <input [ngClass]="{ 'border-red-500' : taskForm.get('title')?.invalid && taskForm.get('title')?.touched }"
                formControlName="title" pInputText placeholder="Task title"
                type="text">
@@ -116,7 +131,7 @@
           enter task title</small>
       </div>
       <div class="col-12 field flex flex-column">
-        <label>Description</label>
+        <label class="field-required">Description</label>
         <textarea
           [ngClass]="{ 'border-red-500' : taskForm.get('description')?.invalid && taskForm.get('description')?.touched }"
           cols="30"
@@ -128,21 +143,30 @@
         <small *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched"
                class="text-red-500">Please enter task description</small>
       </div>
+      <div class="col-12 field flex flex-column">
+        <label class="field-required">Status</label>
+        <input
+          formControlName="status"
+          pInputText
+          type="text"
+        />
+      </div>
       <div class="col-12 md:col-6 field flex flex-column">
-        <label>Priority</label>
+        <label class="field-required">Priority</label>
         <p-dropdown
           [appendTo]="'body'"
           [ngClass]="{ 'border-red-500' : taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched }"
           [options]="priorityArr"
           class="w-full"
           formControlName="priority"
+          placeholder="Set priority"
           styleClass="w-full">
         </p-dropdown>
         <small *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched"
                class="text-red-500">Please select task priority</small>
       </div>
       <div class="col-12 md:col-6 field flex flex-column">
-        <label>Story Point</label>
+        <label class="field-required">Story Point</label>
         <input
           [ngClass]="{ 'border-red-500' : taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched }"
           formControlName="story_point" max="12" min="1" pInputText placeholder="story point"
@@ -151,13 +175,14 @@
                class="text-red-500">Please select valid story point</small>
       </div>
       <div class="col-12 field flex flex-column">
-        <label>Assigned to</label>
+        <label class="field-required">Assigned to</label>
         <p-dropdown
           [appendTo]="'body'"
           [ngClass]="{ 'border-red-500' : taskForm.get('assigned_person')?.invalid && taskForm.get('assigned_person')?.touched }"
           [options]="userList"
           class="w-full"
           formControlName="assigned_person"
+          placeholder="Assign responsible person"
           styleClass="w-full">
         </p-dropdown>
         <small *ngIf="taskForm.get('assigned_person')?.invalid && taskForm.get('assigned_person')?.touched"
@@ -182,10 +207,11 @@
     <h3>Move Task</h3>
   </ng-template>
   <ng-template pTemplate="content">
-    <div class="col-12 field flex flex-column">
-      Are you sure you want to move the selected task to
+    <div class="col-12 field">
+      <span>Are you sure you want to move the selected task to</span> <span
+      *ngIf="currentUser.role=== UserRoleEnum.DEVELOPER" class="ml-1"> <b>DONE</b> status ?</span>
     </div>
-    <div class="col-12 field flex flex-column pt-0">
+    <div *ngIf="currentUser.role === UserRoleEnum.ADMIN" class="col-12 field flex flex-column pt-0">
       <p-dropdown
         [(ngModel)]="selectedTaskStatus"
         [appendTo]="'body'"
@@ -195,8 +221,54 @@
       </p-dropdown>
     </div>
     <div class="col-12 field flex justify-content-end gap-1">
-      <p-button (click)="changeTaskStatus()" label="Yes"></p-button>
+      <p-button (click)="changeTaskStatus()" [disabled]="!selectedTasks.length" label="Yes"></p-button>
       <p-button (click)="onTaskDialogClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="isTaskViewDialogVisible"
+  [draggable]="false"
+  [modal]="true"
+  styleClass="md:w-4 w-9">
+  <ng-template pTemplate="header">
+    <h3>Task Detail</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="grid">
+      <div class="col-12 field">
+        <b>Title</b>
+        <div>{{ taskDetails?.title }}</div>
+      </div>
+      <div class="col-12 field">
+        <b>Description</b>
+        <div>{{ taskDetails?.description }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Priority</b>
+        <div>{{ taskDetails?.priority }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Status</b>
+        <div>{{ taskDetails?.status }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Story point</b>
+        <div>{{ taskDetails?.story_point }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Assigned person</b>
+        <div>{{ taskDetails?.assigned_person }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Created by</b>
+        <div>{{ taskDetails?.creadted_by }}</div>
+      </div>
+      <div class="col-12 md:col-6 field">
+        <b>Created date</b>
+        <div>{{ taskDetails?.creation_date | date:'EEEE, MMMM d, y' }}</div>
+      </div>
     </div>
   </ng-template>
 </p-dialog>

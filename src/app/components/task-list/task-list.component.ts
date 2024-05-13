@@ -37,11 +37,15 @@ export class TaskListComponent implements OnInit {
   public selectedTaskStatus: string = TaskStatusEnum.TODO;
   public currentUser!: User;
   public taskList: Array<Task> = [];
+  public isTaskViewDialogVisible: boolean = false;
+  public taskDetails!: Task;
+  protected readonly UserRoleEnum = UserRoleEnum;
 
   constructor(private readonly fb: FormBuilder, private userService: UserService) {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
+      status: [{value: TaskStatusEnum.AWAITED, disabled: true}, Validators.required],
       priority: ['', Validators.required],
       story_point: [1, [Validators.min(1), Validators.max(12)]],
       assigned_person: ['', Validators.required]
@@ -58,64 +62,28 @@ export class TaskListComponent implements OnInit {
     this.initialiseTableAction();
   }
 
-  initialiseTabItem() {
-    this.taskTabDetails = [
-      {
-        tabTitle: 'Awaited tasks',
-        tabUniqKey: 'Awaited_tasks',
-        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.AWAITED)
-      },
-      {
-        tabTitle: 'ToDo tasks',
-        tabUniqKey: 'Todo_tasks',
-        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.TODO)
-      },
-      {
-        tabTitle: 'Done tasks',
-        tabUniqKey: 'Done_tasks',
-        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.DONE)
-      },
-      {
-        tabTitle: 'Denied tasks',
-        tabUniqKey: 'Denied_tasks',
-        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.REJECTED)
-      }
-    ]
+  loadTableData(activeIndex: number): void {
+    this.tableData = this.taskList.filter((task) => task.status === this.statusMappingObject[activeIndex]);
   }
 
-  initialiseTableAction() {
-    this.tableHeaderActionArr = [
-      {
-        tooltipOptions: {
-          tooltipLabel: 'Add new task',
-          tooltipPosition: 'bottom',
-        },
-        icon: 'pi pi-plus',
-        disabled: this.currentUser.role === UserRoleEnum.DEVELOPER,
-        command: () => {
-          this.isAddTaskDialogVisible = true;
-          this.userList = this.userService.getUserList().map((user: User) => this.userService.getFullName(user));
-        },
-      },
-      {
-        tooltipOptions: {
-          tooltipLabel: 'Move task',
-          tooltipPosition: 'bottom',
-        },
-        icon: 'pi pi-reply',
-        command: () => {
-          this.isMoveTaskDialogVisible = true;
-          if (this.currentUser.role === 'Manager') {
-            this.taskStatusArr = [TaskStatusEnum.TODO, TaskStatusEnum.REJECTED];
-          } else if (this.currentUser.role === 'Developer') {
-            this.taskStatusArr = [TaskStatusEnum.DONE];
-          }
-        },
-      },
-    ];
-  }
-
-  onTasksCheckboxSelection() {
+  onFormSubmit() {
+    if (this.taskForm.invalid) {
+      return;
+    }
+    console.log(this.taskForm);
+    this.taskList.push({
+      ...this.taskForm.value,
+      status: TaskStatusEnum.AWAITED,
+      creation_date: new Date().toString(),
+      creadted_by: this.userService.getFullName(this.currentUser)
+    });
+    localStorage.setItem('taskList', JSON.stringify(this.taskList));
+    if (!this.selectedTabIndex) {
+      this.loadTableData(this.selectedTabIndex)
+    }
+    this.taskTabDetails[0].totalCount = this.countOfTaskBasedOnStatus(TaskStatusEnum.AWAITED)
+    this.isAddTaskDialogVisible = false;
+    this.taskForm.reset();
   }
 
   tabChange() {
@@ -151,23 +119,48 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  loadTableData(activeIndex: number): void {
-    this.tableData = this.taskList.filter((task) => task.status === this.statusMappingObject[activeIndex])
-  }
-
-  onFormSubmit() {
-    if (this.taskForm.invalid) {
-      return;
-    }
-    this.taskForm.value();
-  }
-
   changeTaskStatus() {
-    this.selectedTasks.forEach(task => task.status = this.selectedTaskStatus);
-    this.loadTableData(this.selectedTabIndex);
-    const key: string = this.getKeyByValue(this.selectedTaskStatus);
-    this.taskTabDetails[+key].totalCount = this.countOfTaskBasedOnStatus(this.selectedTaskStatus);
+    if (this.currentUser.role === UserRoleEnum.DEVELOPER) {
+      this.selectedTasks.forEach(task => task.status = TaskStatusEnum.DONE);
+      this.taskTabDetails[2].totalCount = this.countOfTaskBasedOnStatus(TaskStatusEnum.DONE);
+    } else {
+      this.selectedTasks.forEach(task => task.status = this.selectedTaskStatus);
+      const key: string = this.getKeyByValue(this.selectedTaskStatus);
+      this.taskTabDetails[+key].totalCount = this.countOfTaskBasedOnStatus(this.selectedTaskStatus);
+    }
+    this.taskTabDetails[this.selectedTabIndex].totalCount = this.countOfTaskBasedOnStatus(this.statusMappingObject[this.selectedTabIndex]);
     this.isMoveTaskDialogVisible = false;
+    this.loadTableData(this.selectedTabIndex);
+  }
+
+  onTaskRowClick(task: Task): void {
+    this.isTaskViewDialogVisible = true;
+    this.taskDetails = task;
+  }
+
+  private initialiseTabItem(): void {
+    this.taskTabDetails = [
+      {
+        tabTitle: 'Awaited tasks',
+        tabUniqKey: 'Awaited_tasks',
+        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.AWAITED)
+      },
+      {
+        tabTitle: 'ToDo tasks',
+        tabUniqKey: 'Todo_tasks',
+        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.TODO)
+      },
+      {
+        tabTitle: 'Done tasks',
+        tabUniqKey: 'Done_tasks',
+        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.DONE)
+      },
+      {
+        tabTitle: 'Denied tasks',
+        tabUniqKey: 'Denied_tasks',
+        totalCount: this.countOfTaskBasedOnStatus(TaskStatusEnum.REJECTED)
+      }
+    ]
   }
 
   onClose() {
@@ -181,5 +174,40 @@ export class TaskListComponent implements OnInit {
 
   onTaskDialogClose() {
     this.isMoveTaskDialogVisible = false;
+  }
+
+  private initialiseTableAction(): void {
+    if (this.currentUser.role === UserRoleEnum.MANAGER) {
+      this.tableHeaderActionArr.push({
+        tooltipOptions: {
+          tooltipLabel: 'Add new task',
+          tooltipPosition: 'bottom',
+        },
+        icon: 'pi pi-plus',
+        command: () => {
+          this.taskForm.reset();
+          this.taskForm.controls['status'].setValue(TaskStatusEnum.AWAITED);
+          this.taskForm.controls['priority'].setValue(TaskPriorityEnum.HIGH);
+          this.taskForm.controls['story_point'].setValue(1);
+          this.isAddTaskDialogVisible = true;
+          this.userList = this.userService.getUserList().filter((user: User) => user.role === UserRoleEnum.DEVELOPER).map((user: User) => this.userService.getFullName(user));
+        },
+      })
+    }
+    if (this.currentUser.role === UserRoleEnum.ADMIN || this.currentUser.role === UserRoleEnum.DEVELOPER) {
+      this.tableHeaderActionArr.push({
+        tooltipOptions: {
+          tooltipLabel: 'Move task',
+          tooltipPosition: 'bottom',
+        },
+        icon: 'pi pi-reply',
+        command: () => {
+          this.isMoveTaskDialogVisible = true;
+          if (this.currentUser.role === UserRoleEnum.ADMIN) {
+            this.taskStatusArr = [TaskStatusEnum.TODO, TaskStatusEnum.REJECTED];
+          }
+        },
+      })
+    }
   }
 }
