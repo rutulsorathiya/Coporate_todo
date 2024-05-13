@@ -115,8 +115,8 @@
               type="text"/>
           </span>
           <small *ngIf="signInForm.get('password')?.invalid && signInForm.get('password')?.touched"
-                 class="text-red-500">Please
-            enter password</small>
+                 class="text-red-500">Please ensure your password is at least 8 characters long, including: 2 uppercase
+            letters, 3 lowercase letters, 2 digits (0-9), and 1 special character</small>
         </div>
         <div class="col-12 field">
           <label>Re-enter password</label>

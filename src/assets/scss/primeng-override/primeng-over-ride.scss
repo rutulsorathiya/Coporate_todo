@@ -19,6 +19,10 @@
   background: none;
 }
 
+.p-menubar .p-submenu-list {
+  width: 100%;
+}
+
 .dashboard-menubar.p-menubar {
   background: none;
   border: none;
@@ -46,6 +50,14 @@
 
 .task-dialog.p-dialog .p-dialog-header {
   padding: 1rem !important;
+}
+
+@media screen and (max-width: 960px) {
+  .p-menubar.p-menubar-mobile-active .p-menubar-root-list {
+    width: 200px;
+    position: absolute;
+    left: -165px;
+  }
 }
 
 @import "inputtext";

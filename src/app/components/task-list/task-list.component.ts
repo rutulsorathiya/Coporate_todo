@@ -5,6 +5,7 @@ import {TaskPriorityEnum, TaskStatusEnum} from "../../enums/task-status.enum";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../services/user.service";
 import {User} from "../../interfaces/user.interface";
+import {UserRoleEnum} from "../../enums/user.enum";
 
 @Component({
   selector: 'app-task-list',
@@ -30,6 +31,12 @@ export class TaskListComponent implements OnInit {
     2: TaskStatusEnum.DONE,
     3: TaskStatusEnum.REJECTED
   }
+  public selectedTasks: Array<Task> = [];
+  public isMoveTaskDialogVisible: boolean = false;
+  public taskStatusArr: Array<string> = [];
+  public selectedTaskStatus: string = TaskStatusEnum.TODO;
+  public currentUser!: User;
+  public taskList: Array<Task> = [];
 
   constructor(private readonly fb: FormBuilder, private userService: UserService) {
     this.taskForm = this.fb.group({
@@ -43,9 +50,12 @@ export class TaskListComponent implements OnInit {
 
 
   ngOnInit() {
+    localStorage.setItem('taskList', JSON.stringify(TaskList));
+    this.taskList = JSON.parse(localStorage.getItem('taskList') ?? '');
+    this.currentUser = this.userService.getCurrentUser();
+    this.loadTableData(this.selectedTabIndex);
     this.initialiseTabItem();
     this.initialiseTableAction();
-    this.loadTableData(this.selectedTabIndex);
   }
 
   initialiseTabItem() {
@@ -81,20 +91,40 @@ export class TaskListComponent implements OnInit {
           tooltipPosition: 'bottom',
         },
         icon: 'pi pi-plus',
+        disabled: this.currentUser.role === UserRoleEnum.DEVELOPER,
         command: () => {
           this.isAddTaskDialogVisible = true;
           this.userList = this.userService.getUserList().map((user: User) => this.userService.getFullName(user));
         },
       },
+      {
+        tooltipOptions: {
+          tooltipLabel: 'Move task',
+          tooltipPosition: 'bottom',
+        },
+        icon: 'pi pi-reply',
+        command: () => {
+          this.isMoveTaskDialogVisible = true;
+          if (this.currentUser.role === 'Manager') {
+            this.taskStatusArr = [TaskStatusEnum.TODO, TaskStatusEnum.REJECTED];
+          } else if (this.currentUser.role === 'Developer') {
+            this.taskStatusArr = [TaskStatusEnum.DONE];
+          }
+        },
+      },
     ];
   }
 
+  onTasksCheckboxSelection() {
+  }
+
   tabChange() {
+    this.selectedTasks = [];
     this.loadTableData(this.selectedTabIndex);
   }
 
   countOfTaskBasedOnStatus(status: string): number {
-    return TaskList.filter((task) => task.status === status).length
+    return this.taskList.filter((task) => task.status === status).length
   }
 
   getSeverity(status: string): any {
@@ -119,16 +149,10 @@ export class TaskListComponent implements OnInit {
       default:
         return 'badge-secondary';
     }
-
   }
 
   loadTableData(activeIndex: number): void {
-    this.tableData = TaskList.filter((task) => task.status === this.statusMappingObject[activeIndex])
-  }
-
-  onClose() {
-    this.taskForm.reset();
-    this.isAddTaskDialogVisible = false;
+    this.tableData = this.taskList.filter((task) => task.status === this.statusMappingObject[activeIndex])
   }
 
   onFormSubmit() {
@@ -136,5 +160,26 @@ export class TaskListComponent implements OnInit {
       return;
     }
     this.taskForm.value();
+  }
+
+  changeTaskStatus() {
+    this.selectedTasks.forEach(task => task.status = this.selectedTaskStatus);
+    this.loadTableData(this.selectedTabIndex);
+    const key: string = this.getKeyByValue(this.selectedTaskStatus);
+    this.taskTabDetails[+key].totalCount = this.countOfTaskBasedOnStatus(this.selectedTaskStatus);
+    this.isMoveTaskDialogVisible = false;
+  }
+
+  onClose() {
+    this.taskForm.reset();
+    this.isAddTaskDialogVisible = false;
+  }
+
+  getKeyByValue(value: string) {
+    return Object.keys(this.statusMappingObject).find((key: any) => this.statusMappingObject[key] === value) ?? '';
+  }
+
+  onTaskDialogClose() {
+    this.isMoveTaskDialogVisible = false;
   }
 }

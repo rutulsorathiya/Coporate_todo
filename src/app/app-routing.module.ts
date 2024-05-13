@@ -26,6 +26,10 @@ const routes: Routes = [
         component: TaskListComponent
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: NavigationEnum.LOGIN
   }
 ];
 

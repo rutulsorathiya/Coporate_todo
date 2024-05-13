@@ -7,10 +7,9 @@
       class="flex justify-content-end"
       direction="left"
       hideIcon="pi pi-times"
-      showIcon="pi pi-ellipsis-v"
-      styleClass="flex justify-content-end"></p-speedDial>
+      showIcon="pi pi-ellipsis-v"></p-speedDial>
   </div>
-  <div class="col-12">
+  <div class="col-12 pt-0">
     <p-tabView
       (onChange)="tabChange()"
       [(activeIndex)]="selectedTabIndex">
@@ -24,10 +23,8 @@
         </ng-template>
         <ng-template pTemplate="content">
           <p-table
-            #dt
-            [rows]="10"
-            [showCurrentPageReport]="true"
-            [totalRecords]="40"
+            (selectionChange)="onTasksCheckboxSelection()"
+            [(selection)]="selectedTasks"
             [value]="tableData"
             styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
@@ -69,7 +66,7 @@
                 </td>
                 <td>
                   <span class="p-column-title">Status</span>
-                  <p-tag [severity]="getSeverity(task.status)" [value]="task.status | titlecase"/>
+                  <p-tag [severity]="getSeverity(task.status)" [value]="task.status"/>
                 </td>
                 <td>
                   <span class="p-column-title">Priority</span>
@@ -80,7 +77,6 @@
                   <span class="p-column-title">Creation Date</span>
                   <span>{{ task.creation_date | date:'EEEE, MMMM d, y' }}</span>
                 </td>
-
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -147,9 +143,10 @@
       </div>
       <div class="col-12 md:col-6 field flex flex-column">
         <label>Story Point</label>
-        <input [ngClass]="{ 'border-red-500' : taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched }"
-               formControlName="story_point" max="12" min="1" pInputText placeholder="story point"
-               type="number">
+        <input
+          [ngClass]="{ 'border-red-500' : taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched }"
+          formControlName="story_point" max="12" min="1" pInputText placeholder="story point"
+          type="number">
         <small *ngIf="taskForm.get('story_point')?.invalid && taskForm.get('story_point')?.touched"
                class="text-red-500">Please select valid story point</small>
       </div>
@@ -171,5 +168,35 @@
         <p-button (onClick)="onClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
       </div>
     </form>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="isMoveTaskDialogVisible"
+  [closable]="false"
+  [draggable]="false"
+  [modal]="true"
+  class="task-dialog"
+  styleClass="md:w-4 w-9 task-dialog">
+  <ng-template pTemplate="header">
+    <h3>Move Task</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="col-12 field flex flex-column">
+      Are you sure you want to move the selected task to
+    </div>
+    <div class="col-12 field flex flex-column pt-0">
+      <p-dropdown
+        [(ngModel)]="selectedTaskStatus"
+        [appendTo]="'body'"
+        [options]="taskStatusArr"
+        class="w-full"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+    <div class="col-12 field flex justify-content-end gap-1">
+      <p-button (click)="changeTaskStatus()" label="Yes"></p-button>
+      <p-button (click)="onTaskDialogClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
+    </div>
   </ng-template>
 </p-dialog>

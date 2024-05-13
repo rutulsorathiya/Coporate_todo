@@ -1,141 +1,141 @@
 [
   {
     "title": "Task1",
-    "status": "awaited",
-    "priority": "high",
+    "status": "Awaited",
+    "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task2",
-    "status": "awaited",
-    "priority": "low",
+    "status": "Awaited",
+    "priority": "Low",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task3",
-    "status": "awaited",
-    "priority": "high",
+    "status": "Awaited",
+    "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task4",
-    "status": "awaited",
-    "priority": "high",
+    "status": "Awaited",
+    "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task5",
-    "status": "awaited",
-    "priority": "medium",
+    "status": "Awaited",
+    "priority": "Medium",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task6",
-    "status": "todo",
-    "priority": "medium",
+    "status": "Todo",
+    "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task7",
-    "status": "todo",
-    "priority": "medium",
+    "status": "Todo",
+    "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task8",
-    "status": "todo",
-    "priority": "medium",
+    "status": "Todo",
+    "priority": "Medium",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task9",
-    "status": "todo",
-    "priority": "medium",
+    "status": "Todo",
+    "priority": "Medium",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task10",
-    "status": "todo",
-    "priority": "high",
+    "status": "Todo",
+    "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task11",
-    "status": "done",
-    "priority": "high",
+    "status": "Done",
+    "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task12",
-    "status": "done",
-    "priority": "high",
+    "status": "Done",
+    "priority": "High",
     "creadted_by": "Raj",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task13",
-    "status": "done",
-    "priority": "high",
+    "status": "Done",
+    "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task14",
-    "status": "done",
-    "priority": "high",
+    "status": "Done",
+    "priority": "High",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task15",
-    "status": "rejected",
-    "priority": "low",
+    "status": "Rejected",
+    "priority": "Low",
     "creadted_by": "Amish",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task16",
-    "status": "rejected",
-    "priority": "low",
+    "status": "Rejected",
+    "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task17",
-    "status": "rejected",
-    "priority": "low",
+    "status": "Rejected",
+    "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task18",
-    "status": "rejected",
-    "priority": "low",
+    "status": "Rejected",
+    "priority": "Low",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task19",
-    "status": "rejected",
-    "priority": "high",
+    "status": "Rejected",
+    "priority": "High",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
   },
   {
     "title": "Task20",
-    "status": "rejected",
-    "priority": "high",
+    "status": "Rejected",
+    "priority": "High",
     "creadted_by": "John",
     "creation_date": "2024-05-12T11:14:15.543Z"
   }

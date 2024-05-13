@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.pattern('^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$')]],
       reEnterPassword: ['', Validators.required],
       role: [UserRoleEnum.ADMIN, Validators.required]
     });
@@ -42,9 +42,12 @@ export class LoginComponent implements OnInit {
   }
 
   async doLogin() {
+    if (this.loginForm.invalid) {
+      return;
+    }
     if (this.loginForm.value) {
       const validUser = this.userList.filter(user => user.email === this.loginForm.value.email && user.password === this.loginForm.value.password);
-      localStorage.setItem('currentUser',JSON.stringify(validUser[0]))
+      localStorage.setItem('currentUser', JSON.stringify(validUser[0]))
       if (validUser.length) {
         await this.router.navigate([NavigationEnum.DASHBOARD]);
       } else {
@@ -61,23 +64,23 @@ export class LoginComponent implements OnInit {
     if (this.signInForm.invalid) {
       return;
     }
-    if (this.signInForm.controls['password'].value === this.signInForm.controls['reEnterPassword'].value) {
-      delete this.signInForm.value.reEnterPassword;
-      this.userList.push(this.signInForm.value)
-      localStorage.setItem('userList', JSON.stringify(this.userList));
-      this.scope = 'login';
-      this.signInForm.reset();
-      this.messageService.add({
-        severity: 'success',
-        detail: 'User created successfully'
-      })
-    } else {
+    if (this.signInForm.controls['password'].value !== this.signInForm.controls['reEnterPassword'].value) {
       this.messageService.clear();
       this.messageService.add({
         severity: 'error',
         detail: 'Passwords do not match. Please ensure that the passwords entered in both fields match exactly.'
       })
+      return;
     }
+    delete this.signInForm.value.reEnterPassword;
+    this.userList.push(this.signInForm.value)
+    localStorage.setItem('userList', JSON.stringify(this.userList));
+    this.scope = 'login';
+    this.signInForm.reset();
+    this.messageService.add({
+      severity: 'success',
+      detail: 'User created successfully'
+    })
   }
 
   changeScope() {

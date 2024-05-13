@@ -5,7 +5,8 @@ import {User} from "../interfaces/user.interface";
   providedIn: 'root'
 })
 export class UserService {
-  constructor() {}
+  constructor() {
+  }
 
   getCurrentUser() {
     if (localStorage.getItem('currentUser')) {
@@ -24,7 +25,11 @@ export class UserService {
     }
   }
 
-  getFullName(user: User) {
+  getFullName(user: User): string {
     return `${user.firstName} ${user.lastName}`;
+  }
+
+  getFullNameWithUserRole(user: User): string {
+    return `${user.firstName} ${user.lastName} (${user.role})`;
   }
 }

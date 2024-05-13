@@ -1,12 +1,12 @@
 export enum TaskStatusEnum {
-  AWAITED = 'awaited',
-  TODO = 'todo',
-  DONE = 'done',
-  REJECTED = 'rejected'
+  AWAITED = 'Awaited',
+  TODO = 'Todo',
+  DONE = 'Done',
+  REJECTED = 'Rejected'
 }
 
 export enum TaskPriorityEnum {
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low'
+  HIGH = 'High',
+  MEDIUM = 'Medium',
+  LOW = 'Low'
 }

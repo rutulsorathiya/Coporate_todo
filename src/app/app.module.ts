@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PrimengModule } from "./shared/primeng/primeng.module";
 import { LoginComponent } from './components/login/login.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { TaskListComponent } from './components/task-list/task-list.component';
@@ -23,7 +23,8 @@ import {MessageService} from "primeng/api";
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    PrimengModule
+    PrimengModule,
+    FormsModule
   ],
   providers: [
     MessageService
