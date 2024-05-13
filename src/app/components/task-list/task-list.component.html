@@ -23,13 +23,14 @@
         </ng-template>
         <ng-template pTemplate="content">
           <p-table
+            (selectionChange)="onCheckBoxSelection()"
             [(selection)]="selectedTasks"
             [value]="tableData"
             styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
               <tr>
                 <th
-                  *ngIf="(currentUser.role === 'Developer' && selectedTabIndex === 1) || (currentUser.role === 'Admin' && !selectedTabIndex)">
+                  *ngIf="checkToDisplayCheckboxColumn()">
                   <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
                 <th>
@@ -58,7 +59,7 @@
             <ng-template let-task pTemplate="body">
               <tr (click)="onTaskRowClick(task)" class="p-selectable-row cursor-pointer">
                 <td
-                  *ngIf="(currentUser.role === 'Developer' && selectedTabIndex === 1) || (currentUser.role === 'Admin' && !selectedTabIndex)">
+                  *ngIf="checkToDisplayCheckboxColumn()">
                   <p-tableCheckbox
                     (click)="$event.stopPropagation()"
                     [value]="task"></p-tableCheckbox>
@@ -190,7 +191,7 @@
       </div>
       <div class="col-12 field flex justify-content-end gap-1">
         <p-button [disabled]="taskForm.invalid" label="submit" type="submit"></p-button>
-        <p-button (onClick)="onClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
+        <p-button (onClick)="onTaskFormClose()" label="close" styleClass="p-button-outlined" type="button"></p-button>
       </div>
     </form>
   </ng-template>
@@ -239,35 +240,35 @@
     <div class="grid">
       <div class="col-12 field">
         <b>Title</b>
-          <div>{{ taskDetails.title }}</div>
+        <div>{{ taskDetails.title }}</div>
       </div>
       <div class="col-12 field">
         <b>Description</b>
-          <div>{{ taskDetails.description }}</div>
+        <div>{{ taskDetails.description }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Priority</b>
-          <div>{{ taskDetails.priority }}</div>
+        <div>{{ taskDetails.priority }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Status</b>
-          <div>{{ taskDetails.status }}</div>
+        <div>{{ taskDetails.status }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Story point</b>
-          <div>{{ taskDetails.story_point }}</div>
+        <div>{{ taskDetails.story_point }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Assigned person</b>
-          <div>{{ taskDetails.assigned_person }}</div>
+        <div>{{ taskDetails.assigned_person }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Created by</b>
-          <div>{{ taskDetails.creadted_by }}</div>
+        <div>{{ taskDetails.creadted_by }}</div>
       </div>
       <div class="col-12 md:col-6 field">
         <b>Created date</b>
-          <div>{{ taskDetails.creation_date | date:'EEEE, MMMM d, y' }}</div>
+        <div>{{ taskDetails.creation_date | date:'EEEE, MMMM d, y' }}</div>
       </div>
     </div>
   </ng-template>

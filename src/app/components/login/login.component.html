@@ -138,6 +138,7 @@
         <div class="col-12 field flex flex-column">
           <label class="field-required">Role</label>
           <p-dropdown
+            [appendTo]="'body'"
             [ngClass]="{ 'border-red-500' : signInForm.get('role')?.invalid && signInForm.get('role')?.touched }"
             [options]="userRole"
             class="w-full"

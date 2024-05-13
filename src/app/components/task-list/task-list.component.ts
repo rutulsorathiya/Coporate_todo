@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../services/user.service";
 import {User} from "../../interfaces/user.interface";
 import {UserRoleEnum} from "../../enums/user.enum";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-task-list',
@@ -41,7 +42,10 @@ export class TaskListComponent implements OnInit {
   public taskDetails!: Task;
   protected readonly UserRoleEnum = UserRoleEnum;
 
-  constructor(private readonly fb: FormBuilder, private userService: UserService) {
+  constructor(private readonly fb: FormBuilder,
+              private userService: UserService,
+              private readonly confirmationService: ConfirmationService,
+              private readonly messageService: MessageService) {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -62,15 +66,14 @@ export class TaskListComponent implements OnInit {
     this.initialiseTableAction();
   }
 
-  loadTableData(activeIndex: number): void {
+  public loadTableData(activeIndex: number): void {
     this.tableData = this.taskList.filter((task) => task.status === this.statusMappingObject[activeIndex]);
   }
 
-  onFormSubmit() {
+  public onFormSubmit(): void {
     if (this.taskForm.invalid) {
       return;
     }
-    console.log(this.taskForm);
     this.taskList.push({
       ...this.taskForm.value,
       status: TaskStatusEnum.AWAITED,
@@ -84,18 +87,24 @@ export class TaskListComponent implements OnInit {
     this.taskTabDetails[0].totalCount = this.countOfTaskBasedOnStatus(TaskStatusEnum.AWAITED)
     this.isAddTaskDialogVisible = false;
     this.taskForm.reset();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Task created successfully'
+    })
   }
 
-  tabChange() {
+  public tabChange(): void {
     this.selectedTasks = [];
     this.loadTableData(this.selectedTabIndex);
+    this.tableHeaderActionArr = this.tableHeaderActionArr.map(item => {
+      if (item.name !== 'add_task') {
+        item.disabled = true
+      }
+      return item
+    })
   }
 
-  countOfTaskBasedOnStatus(status: string): number {
-    return this.taskList.filter((task) => task.status === status).length
-  }
-
-  getSeverity(status: string): any {
+  public getSeverity(status: string): any {
     switch (status) {
       case TaskStatusEnum.AWAITED:
         return 'warning';
@@ -108,7 +117,7 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  getPriorityClass(status: string) {
+  public getPriorityClass(status: string) {
     switch (status) {
       case TaskPriorityEnum.HIGH:
         return 'badge-danger';
@@ -119,7 +128,7 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  changeTaskStatus() {
+  public changeTaskStatus(): void {
     if (this.currentUser.role === UserRoleEnum.DEVELOPER) {
       this.selectedTasks.forEach(task => task.status = TaskStatusEnum.DONE);
       this.taskTabDetails[2].totalCount = this.countOfTaskBasedOnStatus(TaskStatusEnum.DONE);
@@ -131,11 +140,20 @@ export class TaskListComponent implements OnInit {
     this.taskTabDetails[this.selectedTabIndex].totalCount = this.countOfTaskBasedOnStatus(this.statusMappingObject[this.selectedTabIndex]);
     this.isMoveTaskDialogVisible = false;
     this.loadTableData(this.selectedTabIndex);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Task status changed successfully'
+    })
   }
 
-  onTaskRowClick(task: Task): void {
+  public onTaskRowClick(task: Task): void {
     this.isTaskViewDialogVisible = true;
     this.taskDetails = task;
+  }
+
+  public onTaskFormClose(): void {
+    this.taskForm.reset();
+    this.isAddTaskDialogVisible = false;
   }
 
   private initialiseTabItem(): void {
@@ -163,22 +181,37 @@ export class TaskListComponent implements OnInit {
     ]
   }
 
-  onClose() {
-    this.taskForm.reset();
-    this.isAddTaskDialogVisible = false;
-  }
-
-  getKeyByValue(value: string) {
-    return Object.keys(this.statusMappingObject).find((key: any) => this.statusMappingObject[key] === value) ?? '';
-  }
-
-  onTaskDialogClose() {
+  public onTaskDialogClose(): void {
     this.isMoveTaskDialogVisible = false;
+  }
+
+  public onCheckBoxSelection(): void {
+    this.tableHeaderActionArr = this.selectedTasks.length ? this.tableHeaderActionArr.map(item => {
+      this.disableOrEnableAction(item, true)
+      return item;
+    }) : this.tableHeaderActionArr.map(item => {
+      this.disableOrEnableAction(item, false)
+      return item;
+    })
+  }
+
+  public checkToDisplayCheckboxColumn(): boolean {
+    return (this.currentUser.role === UserRoleEnum.DEVELOPER && this.selectedTabIndex === 1) ||
+      (this.currentUser.role === UserRoleEnum.ADMIN && (!this.selectedTabIndex || this.selectedTabIndex === 2));
+  }
+
+  private countOfTaskBasedOnStatus(status: string): number {
+    return this.taskList.filter((task) => task.status === status).length
+  }
+
+  private getKeyByValue(value: string): string {
+    return Object.keys(this.statusMappingObject).find((key: any) => this.statusMappingObject[key] === value) ?? '';
   }
 
   private initialiseTableAction(): void {
     if (this.currentUser.role === UserRoleEnum.MANAGER) {
       this.tableHeaderActionArr.push({
+        name: 'add_task',
         tooltipOptions: {
           tooltipLabel: 'Add new task',
           tooltipPosition: 'bottom',
@@ -190,17 +223,35 @@ export class TaskListComponent implements OnInit {
           this.taskForm.controls['priority'].setValue(TaskPriorityEnum.HIGH);
           this.taskForm.controls['story_point'].setValue(1);
           this.isAddTaskDialogVisible = true;
-          this.userList = this.userService.getUserList().filter((user: User) => user.role === UserRoleEnum.DEVELOPER).map((user: User) => this.userService.getFullName(user));
+          this.userList = this.userService.getUserList().map((user: User) => this.userService.getFullName(user));
+          // If we want only developer can responsible person then we can do that by using below commented code line
+          // this.userList = this.userService.getUserList().filter((user: User) => user.role === UserRoleEnum.DEVELOPER).map((user: User) => this.userService.getFullName(user));
+        },
+      })
+    }
+    if (this.currentUser.role === UserRoleEnum.ADMIN) {
+      this.tableHeaderActionArr.push({
+        name: 'delete_task',
+        tooltipOptions: {
+          tooltipLabel: 'Delete task',
+          tooltipPosition: 'bottom',
+        },
+        icon: 'pi pi-trash',
+        disabled: true,
+        command: () => {
+          this.openDeleteConfirmation()
         },
       })
     }
     if (this.currentUser.role === UserRoleEnum.ADMIN || this.currentUser.role === UserRoleEnum.DEVELOPER) {
       this.tableHeaderActionArr.push({
+        name: 'move_task',
         tooltipOptions: {
           tooltipLabel: 'Move task',
           tooltipPosition: 'bottom',
         },
         icon: 'pi pi-reply',
+        disabled: true,
         command: () => {
           this.isMoveTaskDialogVisible = true;
           if (this.currentUser.role === UserRoleEnum.ADMIN) {
@@ -208,6 +259,38 @@ export class TaskListComponent implements OnInit {
           }
         },
       })
+    }
+  }
+
+  private openDeleteConfirmation(): void {
+    this.confirmationService.confirm({
+      message: 'Do you want to delete this record?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      accept: () => {
+        if (this.selectedTasks.length) {
+          this.taskList = this.taskList.filter(obj => !this.selectedTasks.some(obj2 => obj.title === obj2.title));
+          this.taskTabDetails[2].totalCount = this.countOfTaskBasedOnStatus(TaskStatusEnum.DONE)
+          this.loadTableData(this.selectedTabIndex);
+        }
+        this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'Record deleted'});
+      },
+      reject: () => {
+        this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'You have rejected'});
+      }
+    });
+  }
+
+  private disableOrEnableAction(item: any, flag: boolean): void {
+    if (item.name === 'move_task' && [0, 1].includes(this.selectedTabIndex)) {
+      item.disabled = flag;
+    }
+    if (item.name === 'delete_task' && this.selectedTabIndex === 2) {
+      item.disabled = flag;
     }
   }
 }
